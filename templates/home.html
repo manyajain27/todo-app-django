@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <title>Task Manager by mj </title>
+  </head>
+  <body class="container">
+    <h1>Your Pending Tasks!</h1>
+    <div class="list-group" id="incomplete-tasks">
+            {% for task in tasks %}
+                    <div class="container d-flex">
+                        <a href="{% url 'task_detail' task.pk %}" class="list-group-item list-group-item-action list-group-item-{% cycle 'primary' 'secondary' 'success' 'danger' 'warning' 'info' 'light' 'dark' %} m-1 col-6">{{ task.heading }}</a>
+                        <input type="checkbox" style="zoom:2;" class="task-checkbox ml-2" data-task-id="{{ task.id }}" {% if task.completed %}checked{% endif %}>
+                    </div>
+                    
+            {% empty %}
+                No tasks available.
+            {% endfor %}
+    </div>
+     <h2>Completed Tasks</h2>
+     <div class="list-group" id="completed-tasks">
+            {% for task in completed_tasks %}
+                
+                    <a href="{% url 'task_detail' task.pk %}" class="list-group-item list-group-item-action list-group-item-{% cycle 'primary' 'secondary' 'success' 'danger' 'warning' 'info' 'light' 'dark' %} m-1 col-6">{{ task.heading }}</a>
+                
+            {% empty %}
+                No tasks available.
+            {% endfor %}
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+    <script>
+        $(document).ready(function() {
+            var csrftoken = '{{ csrf_token }}';
+            
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRFToken': csrftoken
+                }
+            });
+    
+            $('.task-checkbox').change(function() {
+                var checkbox = $(this);
+                var taskId = checkbox.data('task-id');
+                var listGroupItem = checkbox.closest('.list-group-item');
+                
+                $.ajax({
+                    url: "{% url 'update_task_status' pk=0 %}".replace('0', taskId),
+                    type: 'POST',
+                    success: function(response) {
+                        console.log('Response:', response); // Log the response for debugging
+                        listGroupItem.toggleClass('completed', response.completed);
+                        checkbox.prop('checked', response.completed);
+                        
+                        // Move the item to the appropriate list
+                        if (response.completed) {
+                            listGroupItem.appendTo('#completed-tasks');
+                        } else {
+                            listGroupItem.appendTo('#incomplete-tasks');
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error("AJAX Error:", textStatus, errorThrown);
+                    }
+                });
+            });
+        });
+    </script>
+    
+  </body>
+</html>
+ 
