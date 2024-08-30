@@ -87,10 +87,25 @@
 
 
         //darkmode
-        document.getElementById('darkModeToggle').addEventListener('click', function () {
-            document.body.classList.toggle('bg-dark');
-            document.body.classList.toggle('text-light');
-        });
+    let isDarkMode = false;
+
+    document.getElementById('darkModeToggle').addEventListener('click', function () {
+        document.body.classList.toggle('bg-dark');
+        document.body.classList.toggle('text-light');
+        isDarkMode = !isDarkMode;
+        updateModalStyles();
+    });
+
+    function updateModalStyles() {
+        const modaltitle = document.querySelector(".modal-title");
+        const modalbody = document.querySelector(".modal-body");
+        if (isDarkMode) {
+            modaltitle.style.color = "black";
+            modalbody.style.color = "black";
+        }
+    }
+        updateModalStyles();
+
 
         $(document).ready(function() {
             var csrftoken = '{{ csrf_token }}';
