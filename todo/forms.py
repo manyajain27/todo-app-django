@@ -6,9 +6,9 @@ class TaskForm(forms.ModelForm):
         model=Task
         fields=['heading','description','due','category']
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Enter task description...'}),
+            'description': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Enter task description...'}),
             'due': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-            'category': forms.TextInput(attrs={'rows':1,'placeholder':'enter category of task'})
+            'category': forms.Select(attrs={'class': 'form-control'}) 
         }
         labels = {
             'heading': 'Task Title',
@@ -17,8 +17,7 @@ class TaskForm(forms.ModelForm):
             'category': 'Category'
         }
         help_texts = {
-            'heading': 'Enter a brief title for your task.',
-            'due': 'By when does this task need to be completed?'
+            
         }
         error_messages = {
             'heading': {

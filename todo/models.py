@@ -8,7 +8,7 @@ class Task(models.Model):
     due=models.DateTimeField(null=True,blank=True)
     created=models.DateTimeField(auto_now_add=True)
     modified=models.DateTimeField(auto_now=True)
-    category=models.ForeignKey('Category',on_delete=models.SET_NULL,null=True,blank=True)
+    category=models.ForeignKey('Category',on_delete=models.SET_NULL,null=True,blank=True,default=1)
 
     
     def __str__(self):
