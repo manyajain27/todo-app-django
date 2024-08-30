@@ -6,8 +6,8 @@ class Task(models.Model):
     description=models.TextField()
     completed=models.BooleanField(default=False)
     due=models.DateTimeField(null=True,blank=True)
-    created=models.DateTimeField(null=True,blank=True)
-    modified=models.DateTimeField(null=True,blank=True)
+    created=models.DateTimeField(auto_now_add=True)
+    modified=models.DateTimeField(auto_now=True)
     category=models.ForeignKey('Category',on_delete=models.SET_NULL,null=True,blank=True)
 
     

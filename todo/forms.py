@@ -4,7 +4,7 @@ from .models import Task
 class TaskForm(forms.ModelForm):
     class Meta:
         model=Task
-        fields=['heading','description','due','category','completed']
+        fields=['heading','description','due','category']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Enter task description...'}),
             'due': forms.DateTimeInput(attrs={'type': 'datetime-local'}),

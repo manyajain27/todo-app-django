@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Task
 from .forms import TaskForm 
+from django.urls import reverse
+from django.http import HttpResponse
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 # Create your views here.
 
@@ -51,9 +55,8 @@ def update_task(request, pk):
     return render(request, 'task_edit.html', {'form': form})
 
 #deleting tasks
+@require_POST
 def delete_task(request, pk):
     task = get_object_or_404(Task, pk=pk)
-    if request.method == 'POST':
-        task.delete()
-        return redirect('task_list')
-    return render(request, 'task_delete.html', {'task': task})
+    task.delete()
+    return redirect('task_list') 
