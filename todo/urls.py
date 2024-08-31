@@ -2,13 +2,23 @@ from django.urls import path
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
+
 urlpatterns = [
-    path('', views.view_all_tasks, name='task_list'),
+    path('', auth_views.LoginView.as_view(), name='login'),
+    path('tasks/', views.view_all_tasks, name='task_list'),
     path('task/<int:pk>/update_status/', views.update_task_status, name='update_task_status'),
     path('task/<int:pk>/', views.view_details, name='task_detail'),
     path('task/new/', views.create_task, name='task_create'),
     path('task/<int:pk>/edit/', views.update_task, name='task_update'),
     path('task/<int:pk>/delete/',views.delete_task, name='task_delete'),
+    path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
+    path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('register/', views.register, name='register'),
+    # path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    # path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    # path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    # path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ]
 
 if settings.DEBUG:
