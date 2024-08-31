@@ -65,12 +65,18 @@
        <div>
             <img id="darkModeToggle" style="width:50px;height:50px;cursor:pointer" src="{% static 'dark.png' %}">
             <a href="{% url 'task_create' %}" class="btn btn-success my-1" style="zoom:1.1;margin-left:20px;background-color:lightcoral;border:none;">Create Task</a>
-       </div>
+            
+        </div>
         <strong style="font-size:60px; color:lightcoral;margin-top:70px;">TODO LIST...</strong>
         <div style="color:grey">List down everything you've wanting to be done with!</div>
         
         <h1 style="font-size: 70px;margin-top:65px;margin-bottom:0; font-family: "Signika Negative", sans-serif;">Welcome Back,</h1>
         <h1 style="font-size: 70px; font-family: "Signika Negative", sans-serif;">{{firstname|upper}}.</h1>
+        
+        <form class="mt-4" method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
     </div>
     
    <!-- Delete Confirmation Modal -->
