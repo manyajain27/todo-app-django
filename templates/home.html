@@ -37,7 +37,10 @@
                 {% for task in tasks %}
                         <div class=" d-flex align-items-center">
                             <a href="{% url 'task_detail' task.pk %}" style="font-weight:600; font-size:18px" class="list-group-item list-group-item-action list-group-item-{% cycle 'primary' 'secondary' 'success' 'danger' 'warning' 'info' 'dark' %} m-1 col-6">{{ task.heading }}</a>
-                            <input type="checkbox" style="zoom:2;" class="task-checkbox ml-2" data-task-id="{{ task.id }}" {% if task.completed %}checked{% endif %}>
+                            <form method="post" action="{% url 'update_task_status' task.pk %}">
+                                {% csrf_token %}
+                                <input type="checkbox" style="zoom:2;" class="ml-2" onchange="this.form.submit()" {% if task.completed %}checked{% endif %}>
+                            </form>
                             <img src="{% static 'delete.png' %}" style="width:25px;height:25px;cursor:pointer;" class="ml-3 mb-1" data-toggle="modal" data-target="#deleteModal" onclick="setTaskId({{ task.id }})">
                             
                         </div>
@@ -53,7 +56,10 @@
                 {% for task in completed_tasks %}
                 <div class=" d-flex align-items-center">
                         <a href="{% url 'task_detail' task.pk %}" style="font-weight:600; font-size:18px" class="list-group-item list-group-item-action list-group-item-{% cycle 'primary' 'secondary' 'success' 'danger' 'warning' 'info' 'dark' %} m-1 col-6">{{ task.heading }}</a>
-                        <input type="checkbox" style="zoom:2;" class="task-checkbox ml-2" data-task-id="{{ task.id }}" checked>
+                        <form method="post" action="{% url 'update_task_status' task.pk %}">
+                            {% csrf_token %}
+                            <input type="checkbox" style="zoom:2;" class="ml-2" onchange="this.form.submit()" {% if task.completed %}checked{% endif %}>
+                        </form>
                         <img src="{% static 'delete.png' %}" style="width:25px;height:25px;cursor:pointer;" class="ml-3 mb-1" data-toggle="modal" data-target="#deleteModal" onclick="setTaskId({{ task.id }})">
                 </div>  
                 {% empty %}
@@ -135,42 +141,6 @@
     }
         updateModalStyles();
 
-
-        $(document).ready(function() {
-            var csrftoken = '{{ csrf_token }}';
-            
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRFToken': csrftoken
-                }
-            });
-    
-            $('.task-checkbox').change(function() {
-                var checkbox = $(this);
-                var taskId = checkbox.data('task-id');
-                var listGroupItem = checkbox.closest('.list-group-item');
-                
-                $.ajax({
-                    url: "{% url 'update_task_status' pk=0 %}".replace('0', taskId),
-                    type: 'POST',
-                    success: function(response) {
-                        console.log('Response:', response); // Log the response for debugging
-                        listGroupItem.toggleClass('completed', response.completed);
-                        checkbox.prop('checked', response.completed);
-                        
-                        // Move the item to the appropriate list
-                        if (response.completed) {
-                            listGroupItem.appendTo('#completed-tasks');
-                        } else {
-                            listGroupItem.appendTo('#incomplete-tasks');
-                        }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        console.error("AJAX Error:", textStatus, errorThrown);
-                    }
-                });
-            });
-        });
     </script>
     
   </body>

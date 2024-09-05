@@ -19,8 +19,8 @@ def register(request):
             user.first_name = form.cleaned_data.get('fname')
             user.last_name = form.cleaned_data.get('lname')
             user.save()
-            login(request, user)  # Automatically log in the user after registration
-            return redirect('task_list')  # Redirect to a page after registration
+            login(request, user)  
+            return redirect('task_list')
     else:
         form = CustomUserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
@@ -38,10 +38,18 @@ def view_all_tasks(request):
     return render(request,'home.html',context)
 
 def update_task_status(request, pk):
-    task = get_object_or_404(Task, pk=pk)
+    task = get_object_or_404(Task, pk=pk,user=request.user)
     task.completed = not task.completed
     task.save()
-    return JsonResponse({'completed': task.completed})
+    tasks = Task.objects.filter(user=request.user, completed=False)
+    completed_tasks = Task.objects.filter(user=request.user, completed=True)
+    context={
+        'tasks':tasks,
+        'completed_tasks':completed_tasks,
+        'firstname':request.user.first_name,
+        'lastname':request.user.last_name,
+        }
+    return render(request, 'home.html', context)
 
 #view details of each task
 @login_required
