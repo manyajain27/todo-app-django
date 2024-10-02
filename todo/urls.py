@@ -15,6 +15,8 @@ urlpatterns = [
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     path('register/', views.register, name='register'),
+     path('api/todos/', views.TaskListCreateAPIView.as_view(), name='task_list_create'),
+    path('api/todos/<int:pk>/', views.TaskRetrieveUpdateDestroyAPIView.as_view(), name='task_detail'),
 ]
 
 if settings.DEBUG:
